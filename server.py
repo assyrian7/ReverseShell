@@ -80,7 +80,7 @@ def list_connections():
             del all_connections[i]
             del all_addresses[i]
             continue
-        results += str(i) + '   ' + str(all_address[i][0]) + '   ' + str(all_addresses[i][1])
+        results += str(i) + '   ' + str(all_addresses[i][0]) + '   ' + str(all_addresses[i][1])
     print('-----Clients-----' + '\n' + results)
 
 #Select a target client
