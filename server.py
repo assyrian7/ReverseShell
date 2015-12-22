@@ -62,6 +62,8 @@ def start_turtle():
             conn = get_target(cmd)
             if conn is not None:
                 send_target_commands(conn)
+        elif cmd == 'print':
+            print(all_connections[0])
         else:
             print("Command not recognized")
 
@@ -86,7 +88,7 @@ def get_target(cmd):
     try:
         target = int(cmd.replace('select ', ''))
         conn = all_connections[target]
-        print("You are now connected to " + str(all_address[target][0]))
+        print("You are now connected to " + str(all_addresses[target][0]))
         print(str(all_addresses[target][0]) + '> ', end="")
         return conn
     except:
