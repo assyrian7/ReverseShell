@@ -62,8 +62,6 @@ def start_turtle():
             conn = get_target(cmd)
             if conn is not None:
                 send_target_commands(conn)
-        elif cmd == "quit":
-            break
         else:
             print("Command not recognized")
 
