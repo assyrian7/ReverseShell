@@ -54,15 +54,18 @@ def accept_connections():
 
 # Interactive prompt for sending commands remotely
 def start_turtle():
-    cmd = input('turtle> ')
-    if cmd == 'list':
-        list_connections()
-    elif 'select' in cmd:
-        conn = get_target(cmd)
-        if conn is not None:
-            send_target_commands(conn)
-    else:
-        print("Command not recognized")
+    while True:
+        cmd = input('turtle> ')
+        if cmd == 'list':
+            list_connections()
+        elif 'select' in cmd:
+            conn = get_target(cmd)
+            if conn is not None:
+                send_target_commands(conn)
+        elif cmd == "quit":
+            break
+        else:
+            print("Command not recognized")
 
 
 
