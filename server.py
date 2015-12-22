@@ -62,8 +62,9 @@ def start_turtle():
             conn = get_target(cmd)
             if conn is not None:
                 send_target_commands(conn)
-        elif cmd == 'print':
-            print(all_connections[0])
+        elif 'quit' in cmd:
+            s.close()
+            exit()
         else:
             print("Command not recognized")
 
@@ -104,6 +105,7 @@ def send_target_commands(conn):
                 client_response = str(conn.recv(20480), "utf-8")
                 print(client_response, end="")
             if cmd == 'quit':
+                conn.close()
                 break
         except:
             print("Connection was lost")
