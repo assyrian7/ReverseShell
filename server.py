@@ -9,6 +9,7 @@ JOB_NUMBER = [1, 2]
 queue = Queue()
 all_connections = []
 all_addresses = []
+all_threads = []
 
 # Create a socket
 def socket_create():
@@ -62,7 +63,9 @@ def start_turtle():
             conn = get_target(cmd)
             if conn is not None:
                 send_target_commands(conn)
-        
+        elif cmd == 'quit':
+            join_threads()
+            exit()
         else:
             print("Command not recognized")
 
@@ -114,7 +117,13 @@ def create_workers():
     for _ in range(NUMBER_OF_THREADS):
         t = threading.Thread(target=work)
         t.daemon = True
+        all_threads.append(t)
         t.start()
+
+#Join threads when done
+def join_threads():
+    for thread in all_threads:
+        thread.join()
 
 #Do the next job in the queue
 def work():
